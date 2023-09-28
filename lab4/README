@@ -1,0 +1,48 @@
+Implementação com mutex
+Tempo de execução com 1 thread
+Thread 0: in=100560 out=100073 read=9799367
+Tempo: 0.620438
+Tempo de execução com 3 threads
+Thread 2: in=33638 out=33319 read=3266376
+Thread 0: in=33264 out=33463 read=3266607
+Thread 1: in=33658 out=33291 read=3266384
+Tempo: 2.159393
+
+Implementação com rwlock
+Tempo de execução com 1 thread
+Thread 0: in=100560 out=100073 read=9799367
+Tempo: 0.553617
+Tempo de execução com 3 threads
+Thread 1: in=33462 out=33406 read=3266465
+Thread 0: in=33652 out=33487 read=3266195
+Thread 2: in=33446 out=33180 read=3266707
+Tempo: 1.568166
+
+Implementação do padrão leitores/escritores
+Tempo de execução com 1 thread
+Thread 0: in=100560 out=100073 read=9799367
+Tempo: 0.711512
+Tempo de execução com 3 threads
+Thread 0: in=33534 out=33421 read=3266379
+Thread 1: in=33495 out=33388 read=3266450
+Thread 2: in=33531 out=33264 read=3266538
+Tempo: 2.085440
+
+O uso de um mutex é uma maneira comum de garantir a exclusão mútua para acesso a recursos compartilhados. 
+No caso de 1 thread, o tempo de execução é relativamente menor, pois não há concorrência real. No entanto, 
+quando 3 threads estão tentando acessar recursos simultaneamente, há uma competição considerável e, portanto,
+um aumento no tempo de execução.
+
+O uso de um rwlock (um tipo especial de lock que permite acesso concorrente para leitura, mas não para escrita) 
+mostra um desempenho melhor do que o mutex. Para a situação com 1 thread, o tempo é menor, pois não há concorrência. 
+Quando há 3 threads, a abordagem do rwlock consegue gerenciar a concorrência de forma mais eficiente do que o mutex, 
+resultando em um tempo de execução menor.
+
+A implementação de leitores/escritores com condições e mutex é uma maneira de permitir o acesso concorrente para 
+leitura, mas exclusão mútua para escrita. É uma abordagem mais complexa que utiliza condições para sinalizar quando 
+é seguro ler ou escrever. No entanto, essa abordagem se mostrou menos eficiente em comparação com o rwlock, resultando 
+em tempos de execução mais longos para ambas as situações (1 e 3 threads). A implementação de leitores/escritores com 
+condições e mutex envolve o uso de condições (pthread_cond_wait, pthread_cond_signal) e verificações adicionais 
+(while(escr > 0) e while((leit>0) || (escr>0))) para garantir o comportamento correto dos leitores e escritores. 
+  Essas verificações e operações extras podem adicionar overhead ao código, tornando-o um pouco mais lento em comparação 
+ com uma operação de rwlock, que é otimizada para este tipo de operação.
